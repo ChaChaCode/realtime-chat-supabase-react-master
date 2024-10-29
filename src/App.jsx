@@ -29,7 +29,7 @@ function App() {
 
   // Получаем цвет фона из параметров темы Telegram
   const themeParams = window.Telegram?.WebApp?.themeParams;
-  const bgColor = themeParams?.bg_color || 'gray.100'; // Установите значение по умолчанию
+  const bgColor = themeParams?.bg_color; // Убираем значение по умолчанию
 
   return (
     <ChakraProvider theme={theme}>
