@@ -1,7 +1,7 @@
 body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
-  background-color: #383838;
+  background-color: var(--bg-color);
   color: var(--text-color);
 }
 
