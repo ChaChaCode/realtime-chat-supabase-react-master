@@ -21,7 +21,7 @@ export default function Message({ message, isYou }) {
         borderRadius="5px"
         borderTopLeftRadius={isYou ? "5px" : "0"}
         borderTopRightRadius={isYou ? "0" : "5px"}
-        bg={isYou ? "#dbfff9" : "#edf3f9"}
+        bg={isYou ? "#333334" : "#2C2C2E"}
         mt="5"
         position="relative"
         _after={{
@@ -43,7 +43,7 @@ export default function Message({ message, isYou }) {
           fontWeight="500"
           fontSize="md"
           justifySelf="start"
-          color="#2C2C2E"
+          color="#1C1C1C"
           mb="2"
         >
           <span>{message.username} </span>
