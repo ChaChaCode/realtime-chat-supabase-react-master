@@ -6,6 +6,7 @@ const AppContext = createContext({});
 const AppContextProvider = ({ children }) => {
   let myChannel = null;
   const [username, setUsername] = useState("");
+  const [userNameFromTelegram, setUserNameFromTelegram] = useState("");
   const [session, setSession] = useState(null);
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState("");
@@ -45,18 +46,23 @@ const AppContextProvider = ({ children }) => {
   const randomUsername = () => {
     return `@user${Date.now().toString().slice(-4)}`;
   };
+
   const initializeUser = (session) => {
     setSession(session);
-    // const {
-    //   data: { session },
-    // } = await supabase.auth.getSession();
 
+    // Получаем данные о пользователе из Telegram WebApp
+    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     let username;
-    if (session) {
-      username = session.user.user_metadata.user_name;
+
+    if (telegramUser) {
+      // Если данные о пользователе есть, используем их
+      username = telegramUser.username || randomUsername();
+      setUserNameFromTelegram(telegramUser.first_name || "Пользователь");
     } else {
-      username = localStorage.getItem("username") || randomUsername();
+      // В противном случае берем username из сессии или локального хранилища
+      username = session ? session.user.user_metadata.user_name : localStorage.getItem("username") || randomUsername();
     }
+
     setUsername(username);
     localStorage.setItem("username", username);
   };
@@ -80,12 +86,6 @@ const AppContextProvider = ({ children }) => {
       initializeUser(session);
     });
 
-    // const { hash, pathname } = window.location;
-    // if (hash && pathname === "/") {
-    //   console.log("hash", hash);
-    //   setRouteHash(hash);
-    // }
-
     return () => {
       // Remove supabase channel subscription by useEffect unmount
       if (myChannel) {
@@ -108,7 +108,6 @@ const AppContextProvider = ({ children }) => {
 
   const handleNewMessage = (payload) => {
     setMessages((prevMessages) => [payload.new, ...prevMessages]);
-    //* needed to trigger react state because I need access to the username state
     setNewIncomingMessageTrigger(payload.new);
   };
 
@@ -120,7 +119,6 @@ const AppContextProvider = ({ children }) => {
       .select()
       .range(0, 49)
       .order("id", { ascending: false });
-    // console.log(`data`, data);
 
     setLoadingInitial(false);
     if (error) {
@@ -130,7 +128,6 @@ const AppContextProvider = ({ children }) => {
 
     setIsInitialLoad(true);
     setMessages(data);
-    // scrollToBottom(); // not sure why this stopped working, meanwhile using useEffect that's listening to messages and isInitialLoad state.
   };
 
   const getMessagesAndSubscribe = async () => {
@@ -139,13 +136,6 @@ const AppContextProvider = ({ children }) => {
     await getInitialMessages();
 
     if (!myChannel) {
-      // mySubscription = supabase
-      // .from("messages")
-      // .on("*", (payload) => {
-      //   handleNewMessage(payload);
-      // })
-      // .subscribe();
-
       myChannel = supabase
         .channel("custom-all-channel")
         .on(
@@ -168,14 +158,14 @@ const AppContextProvider = ({ children }) => {
       setIsOnBottom(false);
     }
 
-    //* Load more messages when reaching top
+    // Load more messages when reaching top
     if (target.scrollTop === 0) {
-      // console.log("messages.length :>> ", messages.length);
       const { data, error } = await supabase
         .from("messages")
         .select()
         .range(messages.length, messages.length + 49)
         .order("id", { ascending: false });
+
       if (error) {
         setError(error.message);
         return;
@@ -199,6 +189,7 @@ const AppContextProvider = ({ children }) => {
         error,
         getMessagesAndSubscribe,
         username,
+        userNameFromTelegram,
         setUsername,
         randomUsername,
         routeHash,
