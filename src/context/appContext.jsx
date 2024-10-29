@@ -46,14 +46,15 @@ const AppContextProvider = ({ children }) => {
 
   const initializeUser = (session) => {
     setSession(session);
-    
+
     let username;
     const telegramUser = window.Telegram.WebApp.initDataUnsafe.user;
 
+    // Получаем имя пользователя из Telegram, если оно существует
     if (telegramUser && telegramUser.username) {
       username = telegramUser.username;
     } else if (session) {
-      username = session.user.user_metadata.user_name;
+      username = session.user.user_metadata.user_name || randomUsername(); // В случае, если имя пользователя отсутствует
     } else {
       username = localStorage.getItem("username") || randomUsername();
     }
@@ -63,6 +64,7 @@ const AppContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    // Инициализация пользователя
     supabase.auth.getSession().then(({ data: { session } }) => {
       initializeUser(session);
     });
@@ -76,9 +78,7 @@ const AppContextProvider = ({ children }) => {
       getLocation();
     }
 
-    const {
-      data: { subscription: authSubscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("onAuthStateChange", { _event, session });
       initializeUser(session);
     });
