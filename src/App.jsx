@@ -6,11 +6,9 @@ import Footer from "./layout/Footer";
 import Chat from "./components/Chat";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppContextProvider, useAppContext } from "./context/appContext";
-import { useTelegram } from "./useTelegram"; // Импортируем хук
 
 function App() {
   const { username, setUsername, routeHash } = useAppContext();
-  const { closeApp } = useTelegram(); // Используем хук
 
   if (routeHash) {
     if (routeHash.endsWith("&type=recovery")) {
@@ -26,15 +24,10 @@ function App() {
         </div>
       );
   }
-
-  // Получаем цвет фона из параметров темы Telegram
-  const themeParams = window.Telegram?.WebApp?.themeParams;
-  const bgColor = themeParams?.bg_color; // Убираем значение по умолчанию
-
   return (
     <ChakraProvider theme={theme}>
       <AppContextProvider>
-        <Box bg={bgColor}>
+        <Box bg="#1C1C1C" color="white"> {/* Изменил цвет фона на #1C1C1C */}
           {/* <ColorModeSwitcher justifySelf="flex-end" /> */}
           <Router>
             <Routes>
