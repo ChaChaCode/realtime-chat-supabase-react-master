@@ -16,7 +16,8 @@ export default function Header() {
       position="sticky"
       top="0"
       zIndex="10"
-      borderBottom="20px solid #edf2f7"
+      borderBottom="20px solid #1C1C1C"
+      backgroundColor= "#272727"
     >
       {session ? (
         <>

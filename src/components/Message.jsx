@@ -33,7 +33,7 @@ export default function Message({ message, isYou }) {
           borderWidth: isYou ? "0px 0px 10px 10px" : "0px 10px 10px 0",
           borderColor: isYou
             ? "transparent transparent transparent #dbfff9"
-            : "transparent #edf3f9 transparent transparent",
+            : "transparent #2C2C2E transparent transparent",
           top: 0,
           left: isYou ? "auto" : "-10px",
           right: isYou ? "-10px" : "auto",
@@ -43,13 +43,13 @@ export default function Message({ message, isYou }) {
           fontWeight="500"
           fontSize="md"
           justifySelf="start"
-          color="#1C1C1C"
+          color="#fff"
           mb="2"
         >
           <span>{message.username} </span>
           {message.is_authenticated && (
             <MdVerified
-              color="#1d9bf0"
+              color="#1C1C1C"
               style={{ display: "inline", marginRight: "5px" }}
             />
           )}

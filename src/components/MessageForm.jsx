@@ -54,7 +54,7 @@ export default function MessageForm() {
   };
 
   return (
-    <Box py="10px" pt="15px" bg="gray.100">
+    <Box py="10px" pt="15px" bg="#272727">
       <Container maxW="600px">
         <form onSubmit={handleSubmit} autoComplete="off">
           <Stack direction="row">
@@ -63,10 +63,11 @@ export default function MessageForm() {
               placeholder="Enter a message"
               onChange={(e) => setMessage(e.target.value)}
               value={message}
-              bg="white"
+              bg="#161616"
               border="none"
               autoFocus
               maxLength="500"
+              color="#fff"
             />
             <IconButton
               // variant="outline"

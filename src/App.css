@@ -1,8 +1,8 @@
 body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  background-color: #1C1C1C;
+  color: #1C1C1C;
 }
 
 html {
@@ -15,7 +15,7 @@ html {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #424242;
 }
 
 /* Handle */
@@ -26,9 +26,9 @@ html {
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--button-color-hover);
+  background: #1C1C1C;
 }
 
 a {
-  color: var(--button-color) !important;
+  color: #1C1C1C !important;
 }

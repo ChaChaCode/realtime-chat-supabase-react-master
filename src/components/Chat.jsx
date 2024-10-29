@@ -15,14 +15,14 @@ export default function Chat() {
   } = useAppContext();
   useEffect(() => {
     window.addEventListener("resize", () => {
-      setHeight(window.innerHeight - 205);
+      setHeight(window.innerHeight - 110);
     });
   }, []);
 
   return (
     <Container maxW="600px" pb="20px">
       <Box
-        bg="#2C2C2E"
+        bg="#1C1C1C"
         p="5"
         overflow="auto"
         borderRadius="10px"
