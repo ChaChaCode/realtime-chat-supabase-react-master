@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Input, Stack, IconButton } from "@chakra-ui/react";
+import { Input, Stack, IconButton, Text } from "@chakra-ui/react";
 import { BiSave, BiEdit } from "react-icons/bi";
 import { useAppContext } from "../context/appContext";
 
@@ -18,9 +18,11 @@ export default function NameForm() {
       inputRef.current.focus();
     }
   }, [isEditing]);
+
   useEffect(() => {
     setNewUsername(username);
   }, [username]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     toggleEditing();
@@ -29,16 +31,14 @@ export default function NameForm() {
       setNewUsername(username);
       return;
     }
-    // setUsername(newUsername);
-    // setIsEditing(false);
 
     setUsername(newUsername);
     localStorage.setItem("username", newUsername);
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginRight: "20px" }}>
-      <Stack direction="row">
+    <form onSubmit={handleSubmit} style={{ marginLeft: "20px" }}>
+      <Stack direction="row" alignItems="center" justifyContent="center" width="100%">
         {isEditing ? (
           <Input
             name="username"
@@ -53,9 +53,15 @@ export default function NameForm() {
             maxLength="15"
           />
         ) : (
-          <span onClick={toggleEditing} style={{ cursor: "pointer" }}>
-            Welcome <strong>{newUsername}</strong>
-          </span>
+          <Text 
+            onClick={toggleEditing} 
+            cursor="pointer" 
+            width="100%" 
+            textAlign="center" 
+            flexGrow={1}
+          >
+            Чат для пидарасов и ты <strong>{newUsername}</strong>
+          </Text>
         )}
         <IconButton
           size="sm"

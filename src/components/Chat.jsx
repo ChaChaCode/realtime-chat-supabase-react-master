@@ -16,7 +16,7 @@ export default function Chat() {
 
   useLayoutEffect(() => {
     const updateHeight = () => {
-      setHeight(window.innerHeight - 110);
+      setHeight(window.innerHeight - 125);
     };
 
     // Установка начальной высоты и подписка на изменение размеров
