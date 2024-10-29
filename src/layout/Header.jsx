@@ -18,9 +18,6 @@ export default function Header() {
       zIndex="10"
       borderBottom="20px solid #edf2f7"
     >
-      <GridItem justifySelf="start" m="2">
-        <Image src="/logo.png" height="30px" ml="2" />
-      </GridItem>
       {session ? (
         <>
           <GridItem justifySelf="end" alignSelf="center" mr="4">
