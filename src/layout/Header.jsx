@@ -46,21 +46,6 @@ export default function Header() {
           <GridItem justifySelf="end" alignSelf="end">
             <NameForm username={username} setUsername={setUsername} />
           </GridItem>
-          <Button
-            size="sm"
-            marginRight="2"
-            colorScheme="teal"
-            rightIcon={<FaGithub />}
-            variant="outline"
-            onClick={() =>
-              supabase.auth.signInWithOAuth({
-                provider: "github",
-                redirectTo: window.location.origin,
-              })
-            }
-          >
-            Login
-          </Button>
         </>
       )}
     </Grid>
