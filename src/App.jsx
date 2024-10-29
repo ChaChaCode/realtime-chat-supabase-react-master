@@ -6,7 +6,7 @@ import Footer from "./layout/Footer";
 import Chat from "./components/Chat";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppContextProvider, useAppContext } from "./context/appContext";
-import { useTelegram } from "./hooks/useTelegram"; // Импортируем хук
+import { useTelegram } from "./useTelegram"; // Импортируем хук
 
 function App() {
   const { username, setUsername, routeHash } = useAppContext();
