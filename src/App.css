@@ -1,7 +1,10 @@
 body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
+
 html {
   height: -webkit-fill-available;
 }
@@ -17,16 +20,15 @@ html {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  /* background: #888; */
-  background: #3faaac;
+  background: var(--button-color);
   border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #2c7a7b;
+  background: var(--button-color-hover);
 }
 
 a {
-  color: teal !important;
+  color: var(--button-color) !important;
 }
