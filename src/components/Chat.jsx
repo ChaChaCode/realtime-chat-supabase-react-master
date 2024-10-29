@@ -1,5 +1,5 @@
 import { Badge, Box, Container } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useAppContext } from "../context/appContext";
 import Messages from "./Messages";
 import { BsChevronDoubleDown } from "react-icons/bs";
@@ -13,10 +13,20 @@ export default function Chat() {
     isOnBottom,
     unviewedMessageCount,
   } = useAppContext();
-  useEffect(() => {
-    window.addEventListener("resize", () => {
+
+  useLayoutEffect(() => {
+    const updateHeight = () => {
       setHeight(window.innerHeight - 110);
-    });
+    };
+
+    // Установка начальной высоты и подписка на изменение размеров
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+
+    // Очистка обработчика события при размонтировании компонента
+    return () => {
+      window.removeEventListener("resize", updateHeight);
+    };
   }, []);
 
   return (
@@ -36,7 +46,6 @@ export default function Chat() {
             style={{
               position: "sticky",
               bottom: 8,
-              // right: 0,
               float: "right",
               cursor: "pointer",
             }}
