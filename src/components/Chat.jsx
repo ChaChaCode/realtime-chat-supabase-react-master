@@ -22,7 +22,7 @@ export default function Chat() {
   return (
     <Container maxW="600px" pb="20px">
       <Box
-        bg="white"
+        bg="#2C2C2E"
         p="5"
         overflow="auto"
         borderRadius="10px"

@@ -43,7 +43,7 @@ export default function Message({ message, isYou }) {
           fontWeight="500"
           fontSize="md"
           justifySelf="start"
-          color="gray.500"
+          color="#2C2C2E"
           mb="2"
         >
           <span>{message.username} </span>
