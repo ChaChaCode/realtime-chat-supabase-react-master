@@ -12,52 +12,42 @@ const AppContextProvider = ({ children }) => {
   const [loadingInitial, setLoadingInitial] = useState(true);
   const [routeHash, setRouteHash] = useState("");
   const [isOnBottom, setIsOnBottom] = useState(false);
-  const [newIncomingMessageTrigger, setNewIncomingMessageTrigger] =
-    useState(null);
+  const [newIncomingMessageTrigger, setNewIncomingMessageTrigger] = useState(null);
   const [unviewedMessageCount, setUnviewedMessageCount] = useState(0);
   const [countryCode, setCountryCode] = useState("");
   const [isInitialLoad, setIsInitialLoad] = useState(false);
+  
+  // Добавляем состояние для хранения Telegram ID
+  const [telegramId, setTelegramId] = useState("");
 
   useEffect(() => {
-    // Effect to scroll to bottom on initial message load
-    if (isInitialLoad) {
-      setIsInitialLoad(false);
-      scrollToBottom();
+    // Инициализируем данные пользователя из Telegram WebApp API
+    const tgUser = window.Telegram.WebApp?.initDataUnsafe?.user;
+    if (tgUser) {
+      setTelegramId(tgUser.id);
+      setUsername(tgUser.username);
+    } else {
+      setUsername(localStorage.getItem("username") || randomUsername());
     }
-  }, [messages]);
-
-  const getLocation = async () => {
-    try {
-      const res = await fetch("https://api.db-ip.com/v2/free/self");
-      const { countryCode, error } = await res.json();
-      if (error) throw new Error(error);
-
-      setCountryCode(countryCode);
-      localStorage.setItem("countryCode", countryCode);
-    } catch (error) {
-      console.error(
-        `error getting location from api.db-ip.com:`,
-        error.message
-      );
-    }
-  };
+  }, []);
 
   const randomUsername = () => {
     return `@user${Date.now().toString().slice(-4)}`;
   };
+
   const initializeUser = (session) => {
     setSession(session);
-    // const {
-    //   data: { session },
-    // } = await supabase.auth.getSession();
 
-    let username;
-    if (session) {
-      username = session.user.user_metadata.user_name;
+    if (!session) {
+      const storedUsername = localStorage.getItem("username") || randomUsername();
+      setUsername(storedUsername);
     } else {
-      username = localStorage.getItem("username") || randomUsername();
+      const { user } = session;
+      const telegramUsername = user?.user_metadata?.user_name || "";
+      setUsername(telegramUsername);
+      setTelegramId(user.id); // используем id из сессии, если она есть
     }
-    setUsername(username);
+
     localStorage.setItem("username", username);
   };
 
@@ -80,35 +70,33 @@ const AppContextProvider = ({ children }) => {
       initializeUser(session);
     });
 
-    // const { hash, pathname } = window.location;
-    // if (hash && pathname === "/") {
-    //   console.log("hash", hash);
-    //   setRouteHash(hash);
-    // }
-
     return () => {
-      // Remove supabase channel subscription by useEffect unmount
+      // Очищаем подписку при размонтировании
       if (myChannel) {
         supabase.removeChannel(myChannel);
       }
-
       authSubscription.unsubscribe();
     };
   }, []);
 
-  useEffect(() => {
-    if (!newIncomingMessageTrigger) return;
+  const getLocation = async () => {
+    try {
+      const res = await fetch("https://api.db-ip.com/v2/free/self");
+      const { countryCode, error } = await res.json();
+      if (error) throw new Error(error);
 
-    if (newIncomingMessageTrigger.username === username) {
-      scrollToBottom();
-    } else {
-      setUnviewedMessageCount((prevCount) => prevCount + 1);
+      setCountryCode(countryCode);
+      localStorage.setItem("countryCode", countryCode);
+    } catch (error) {
+      console.error(
+        `error getting location from api.db-ip.com:`,
+        error.message
+      );
     }
-  }, [newIncomingMessageTrigger]);
+  };
 
   const handleNewMessage = (payload) => {
     setMessages((prevMessages) => [payload.new, ...prevMessages]);
-    //* needed to trigger react state because I need access to the username state
     setNewIncomingMessageTrigger(payload.new);
   };
 
@@ -120,7 +108,6 @@ const AppContextProvider = ({ children }) => {
       .select()
       .range(0, 49)
       .order("id", { ascending: false });
-    // console.log(`data`, data);
 
     setLoadingInitial(false);
     if (error) {
@@ -130,22 +117,13 @@ const AppContextProvider = ({ children }) => {
 
     setIsInitialLoad(true);
     setMessages(data);
-    // scrollToBottom(); // not sure why this stopped working, meanwhile using useEffect that's listening to messages and isInitialLoad state.
   };
 
   const getMessagesAndSubscribe = async () => {
     setError("");
-
     await getInitialMessages();
 
     if (!myChannel) {
-      // mySubscription = supabase
-      // .from("messages")
-      // .on("*", (payload) => {
-      //   handleNewMessage(payload);
-      // })
-      // .subscribe();
-
       myChannel = supabase
         .channel("custom-all-channel")
         .on(
@@ -168,9 +146,7 @@ const AppContextProvider = ({ children }) => {
       setIsOnBottom(false);
     }
 
-    //* Load more messages when reaching top
     if (target.scrollTop === 0) {
-      // console.log("messages.length :>> ", messages.length);
       const { data, error } = await supabase
         .from("messages")
         .select()
@@ -187,7 +163,6 @@ const AppContextProvider = ({ children }) => {
 
   const scrollToBottom = () => {
     if (!scrollRef.current) return;
-
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   };
 
@@ -200,6 +175,7 @@ const AppContextProvider = ({ children }) => {
         getMessagesAndSubscribe,
         username,
         setUsername,
+        telegramId,
         randomUsername,
         routeHash,
         scrollRef,
