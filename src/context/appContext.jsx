@@ -16,24 +16,23 @@ const AppContextProvider = ({ children }) => {
   const [unviewedMessageCount, setUnviewedMessageCount] = useState(0);
   const [countryCode, setCountryCode] = useState("");
   const [isInitialLoad, setIsInitialLoad] = useState(false);
-  
-  // Добавляем состояние для хранения Telegram ID
   const [telegramId, setTelegramId] = useState("");
 
+  // Функция для создания случайного имени, если нет данных Telegram
+  const randomUsername = () => {
+    return `@user${Date.now().toString().slice(-4)}`;
+  };
+
   useEffect(() => {
-    // Инициализируем данные пользователя из Telegram WebApp API
+    // Проверяем, есть ли данные пользователя из Telegram WebApp API
     const tgUser = window.Telegram.WebApp?.initDataUnsafe?.user;
     if (tgUser) {
       setTelegramId(tgUser.id);
-      setUsername(tgUser.username);
+      setUsername(tgUser.username); // Устанавливаем username из Telegram
     } else {
       setUsername(localStorage.getItem("username") || randomUsername());
     }
   }, []);
-
-  const randomUsername = () => {
-    return `@user${Date.now().toString().slice(-4)}`;
-  };
 
   const initializeUser = (session) => {
     setSession(session);
@@ -45,7 +44,7 @@ const AppContextProvider = ({ children }) => {
       const { user } = session;
       const telegramUsername = user?.user_metadata?.user_name || "";
       setUsername(telegramUsername);
-      setTelegramId(user.id); // используем id из сессии, если она есть
+      setTelegramId(user.id);
     }
 
     localStorage.setItem("username", username);
@@ -176,7 +175,6 @@ const AppContextProvider = ({ children }) => {
         username,
         setUsername,
         telegramId,
-        randomUsername,
         routeHash,
         scrollRef,
         onScroll,
