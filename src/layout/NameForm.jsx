@@ -7,6 +7,11 @@ export default function NameForm() {
   const { username, setUsername } = useAppContext();
   const [newUsername, setNewUsername] = useState(username);
   const [isEditing, setIsEditing] = useState(false);
+
+  // Добавляем состояние для id и username из Telegram WebApp API
+  const [telegramId, setTelegramId] = useState("");
+  const [telegramUsername, setTelegramUsername] = useState("");
+
   const toggleEditing = () => {
     setIsEditing(!isEditing);
   };
@@ -22,6 +27,15 @@ export default function NameForm() {
   useEffect(() => {
     setNewUsername(username);
   }, [username]);
+
+  useEffect(() => {
+    // Получаем данные пользователя из Telegram WebApp API
+    const tgUser = window.Telegram.WebApp?.initDataUnsafe?.user;
+    if (tgUser) {
+      setTelegramId(tgUser.id);
+      setTelegramUsername(tgUser.username);
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -60,7 +74,7 @@ export default function NameForm() {
             textAlign="center" 
             flexGrow={1}
           >
-            Чат для пидарасов и ты <strong>{newUsername}</strong>
+            Твой id tg - {telegramId}, твой username - {telegramUsername}, твой аккаунт - <strong>{newUsername}</strong>
           </Text>
         )}
         <IconButton
