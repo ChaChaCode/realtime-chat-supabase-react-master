@@ -6,9 +6,11 @@ import Footer from "./layout/Footer";
 import Chat from "./components/Chat";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppContextProvider, useAppContext } from "./context/appContext";
+import { useTelegram } from './useTelegram'; // Импортируем useTelegram
 
 function App() {
   const { username, setUsername, routeHash } = useAppContext();
+  const { closeApp } = useTelegram(); // Используем хук useTelegram
 
   if (routeHash) {
     if (routeHash.endsWith("&type=recovery")) {
@@ -24,6 +26,7 @@ function App() {
         </div>
       );
   }
+
   return (
     <ChakraProvider theme={theme}>
       <AppContextProvider>
