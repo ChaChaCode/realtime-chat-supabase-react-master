@@ -73,6 +73,7 @@ export default function NameForm() {
             width="100%" 
             textAlign="center" 
             flexGrow={1}
+            fontSize="5px" 
           >
             Твой id tg - {telegramId}, твой username - {telegramUsername}, твой аккаунт - <strong>{newUsername}</strong>
           </Text>
