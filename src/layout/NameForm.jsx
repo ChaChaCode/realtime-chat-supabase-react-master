@@ -7,11 +7,6 @@ export default function NameForm() {
   const { username, setUsername } = useAppContext();
   const [newUsername, setNewUsername] = useState(username);
   const [isEditing, setIsEditing] = useState(false);
-
-  // Добавляем состояние для id и username из Telegram WebApp API
-  const [telegramId, setTelegramId] = useState("");
-  const [telegramUsername, setTelegramUsername] = useState("");
-
   const toggleEditing = () => {
     setIsEditing(!isEditing);
   };
@@ -27,15 +22,6 @@ export default function NameForm() {
   useEffect(() => {
     setNewUsername(username);
   }, [username]);
-
-  useEffect(() => {
-    // Получаем данные пользователя из Telegram WebApp API
-    const tgUser = window.Telegram.WebApp?.initDataUnsafe?.user;
-    if (tgUser) {
-      setTelegramId(tgUser.id);
-      setTelegramUsername(tgUser.username);
-    }
-  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -73,26 +59,10 @@ export default function NameForm() {
             width="100%" 
             textAlign="center" 
             flexGrow={1}
-            fontSize="5px" 
           >
-            Твой id tg - {telegramId}, твой username - {telegramUsername}, твой аккаунт - <strong>{newUsername}</strong>
+            Чат и ты <strong>{newUsername}</strong>
           </Text>
         )}
-        <IconButton
-          size="sm"
-          paddingBottom="12px"
-          variant="outline"
-          colorScheme="teal"
-          aria-label="Save"
-          fontSize="15px"
-          icon={isEditing ? <BiSave /> : <BiEdit />}
-          border="none"
-          onClick={(e) => {
-            if (isEditing) {
-              handleSubmit(e);
-            } else toggleEditing();
-          }}
-        />
       </Stack>
     </form>
   );
