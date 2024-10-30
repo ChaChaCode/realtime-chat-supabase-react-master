@@ -18,36 +18,31 @@ const AppContextProvider = ({ children }) => {
   const [isInitialLoad, setIsInitialLoad] = useState(false);
   const [telegramId, setTelegramId] = useState("");
 
-  // Функция для создания случайного имени, если нет данных Telegram
-  const randomUsername = () => {
-    return `@user${Date.now().toString().slice(-4)}`;
-  };
-
   useEffect(() => {
     // Проверяем, есть ли данные пользователя из Telegram WebApp API
     const tgUser = window.Telegram.WebApp?.initDataUnsafe?.user;
     if (tgUser) {
       setTelegramId(tgUser.id);
-      setUsername(tgUser.username); // Устанавливаем username из Telegram
+      setUsername(tgUser.username); // Используем username из Telegram
+      localStorage.setItem("username", tgUser.username); // Сохраняем username в localStorage
     } else {
-      setUsername(localStorage.getItem("username") || randomUsername());
+      // Загружаем username из localStorage, если нет данных Telegram
+      setUsername(localStorage.getItem("username") || "");
     }
   }, []);
 
   const initializeUser = (session) => {
     setSession(session);
 
-    if (!session) {
-      const storedUsername = localStorage.getItem("username") || randomUsername();
-      setUsername(storedUsername);
-    } else {
+    if (session) {
       const { user } = session;
-      const telegramUsername = user?.user_metadata?.user_name || "";
+      const telegramUsername = user?.user_metadata?.user_name || username;
       setUsername(telegramUsername);
       setTelegramId(user.id);
+      localStorage.setItem("username", telegramUsername);
+    } else {
+      setUsername(localStorage.getItem("username") || username);
     }
-
-    localStorage.setItem("username", username);
   };
 
   useEffect(() => {
@@ -65,7 +60,6 @@ const AppContextProvider = ({ children }) => {
     const {
       data: { subscription: authSubscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("onAuthStateChange", { _event, session });
       initializeUser(session);
     });
 
@@ -87,10 +81,7 @@ const AppContextProvider = ({ children }) => {
       setCountryCode(countryCode);
       localStorage.setItem("countryCode", countryCode);
     } catch (error) {
-      console.error(
-        `error getting location from api.db-ip.com:`,
-        error.message
-      );
+      console.error("error getting location from api.db-ip.com:", error.message);
     }
   };
 
